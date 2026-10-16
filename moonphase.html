@@ -13,13 +13,20 @@
       background: black;
       overflow: hidden;
     }
+
+    .moonphases_img {
+      width: min(25vw, 400px) !important;
+      height: min(25vw, 400px) !important;
+      max-width: none !important;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
   <script
     src="https://moonphases.co.uk/js/widget.js"
     id="moonphase_widget"
-    widget="wide"
+    widget="small-nodate"
     lat=""
     lng=""
     date=""
