@@ -1,90 +1,47 @@
+<style>
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+  }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Moon Phase</title>
+  .moonphases {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000 !important;
-      overflow: hidden;
-    }
+  .moonphases_phase {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .moonphases_img {
+    display: block !important;
+    width: 25vw !important;
+    height: 25vw !important;
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
 
-    /* Remove widget text and branding */
-    .moonphases_text,
-    .moonphases_illum_text,
-    .moonphases_foot,
-    .moonphases_date_text,
-    .moonphases_logo,
-    .moonphase_right,
-    h2, h3, p {
-      display: none !important;
-    }
-
-    /* Remove widget box styling */
-    .moonphases,
-    .moonphases_phase,
-    .moonphases_launch {
-      background: transparent !important;
-      border: 0 !important;
-      outline: 0 !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      margin: 0 !important;
-    }
-
-    .moonphases {
-      width: auto !important;
-      height: auto !important;
-    }
-
-    .moonphases_img {
-      width: 50vw !important;
-      height: 50vw !important;
-      max-width: none !important;
-      object-fit: contain !important;
-      display: block !important;
-    }
-  </style>
-</head>
-<body>
-
-  <script
-    src="https://moonphases.co.uk/js/widget.js"
-    id="moonphase_widget"
-    widget="small-nodate"
-    lat=""
-    lng=""
-    date=""
-    tz="">
-  </script>
-
-  <script>
-    // Apply sizing after the external widget has inserted its image.
-    const moonTimer = setInterval(function () {
-      const moon = document.querySelector('.moonphases_img');
-
-      if (moon) {
-        moon.style.setProperty('width', '25vw', 'important');
-        moon.style.setProperty('height', '25vw', 'important');
-        moon.style.setProperty('max-width', 'none', 'important');
-
-        clearInterval(moonTimer);
-      }
-    }, 200);
-  </script>
-
-</body>
-</html>
+  .moonphases_text,
+  .moonphases_illum_text,
+  .moonphases_foot {
+    display: none !important;
+  }
+</style>
