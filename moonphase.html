@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Moon Phase</title>
+
   <style>
     html, body {
       margin: 0;
@@ -14,15 +16,15 @@
       overflow: hidden;
     }
 
-    .moonphases_img {
-      width: min(25vw, 400px) !important;
-      height: min(25vw, 400px) !important;
-      max-width: none !important;
-      object-fit: contain;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   </style>
 </head>
 <body>
+
   <script
     src="https://moonphases.co.uk/js/widget.js"
     id="moonphase_widget"
@@ -32,5 +34,27 @@
     date=""
     tz="">
   </script>
+
+  <script>
+    const resizeMoon = setInterval(() => {
+      const moon = document.querySelector('.moonphases_img');
+
+      if (moon) {
+        moon.style.setProperty('width', '25vw', 'important');
+        moon.style.setProperty('height', '25vw', 'important');
+        moon.style.setProperty('max-width', 'none', 'important');
+        moon.style.setProperty('object-fit', 'contain', 'important');
+
+        // Remove the widget's other content
+        document.querySelectorAll(
+          '.moonphases_text, .moonphases_illum_text, .moonphases_foot'
+        ).forEach(el => el.style.display = 'none');
+
+        clearInterval(resizeMoon);
+      }
+    }, 100);
+
+  </script>
+
 </body>
 </html>
