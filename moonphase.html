@@ -6,82 +6,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Moon Phase</title>
 
+  <style>
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      overflow: hidden;
+    }
 
-<style>
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100%;
-    height: 100%;
-    background: #000 !important;
-    overflow: hidden;
-  }
+    /* Position widget at the top-left */
+    .moonphases {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      text-align: left !important;
+    }
 
-  /* Position widget at the top-left with no outer box */
-  .moonphases {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: auto !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    text-align: left !important;
-  }
+    /* Remove spacing and box styling */
+    .moonphases div,
+    .moonphases_phase,
+    .moonphases_launch {
+      display: block !important;
+      width: auto !important;
+      height: auto !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      float: none !important;
+    }
 
-  /* Remove spacing and forced width from inner containers */
-  .moonphases div,
-  .moonphases_phase,
-  .moonphases_launch {
-    display: block !important;
-    width: auto !important;
-    height: auto !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    float: none !important;
-  }
+    /* Fixed-size moon image */
+    .moonphases_phase img,
+    .moonphases_img {
+      display: block !important;
+      width: 300px !important;
+      height: 300px !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      object-fit: contain !important;
+      float: none !important;
+    }
 
-  /* Size the moon image only */
-  .moonphases_phase img,
-  .moonphases_img {
-    display: block !important;
-    width: 300px !important;
-    height: 300px !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    object-fit: contain !important;
-    float: none !important;
-  }
-
-  /* Hide labels and branding */
-  .moonphases_text,
-  .moonphases_illum_text,
-  .moonphases_foot,
-  .moonphases_date_text,
-  .moonphases_logo,
-  .moonphases_logo_small,
-  .moonphase_right,
-  .moonphases h2,
-  .moonphases h3,
-  .moonphases p {
-    display: none !important;
-  }
-</style>
-
+    /* Hide labels and branding */
+    .moonphases_text,
+    .moonphases_illum_text,
+    .moonphases_foot,
+    .moonphases_date_text,
+    .moonphases_logo,
+    .moonphases_logo_small,
+    .moonphase_right,
+    .moonphases h2,
+    .moonphases h3,
+    .moonphases p {
+      display: none !important;
+    }
+  </style>
 </head>
+
 <body>
 
+  <!-- Moon phase widget -->
   <script
     src="https://moonphases.co.uk/js/widget.js"
     id="moonphase_widget"
@@ -92,8 +93,8 @@
     tz="">
   </script>
 
+  <!-- Enforce fixed image size after widget loads -->
   <script>
-    // Apply sizing after the external widget has inserted its image.
     const moonTimer = setInterval(function () {
       const moon = document.querySelector('.moonphases_img');
 
@@ -101,6 +102,9 @@
         moon.style.setProperty('width', '300px', 'important');
         moon.style.setProperty('height', '300px', 'important');
         moon.style.setProperty('max-width', 'none', 'important');
+        moon.style.setProperty('margin', '0', 'important');
+        moon.style.setProperty('padding', '0', 'important');
+        moon.style.setProperty('border', '0', 'important');
 
         clearInterval(moonTimer);
       }
