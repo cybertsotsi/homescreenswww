@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Air Quality</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    overflow: hidden;
+  }
+
+  .widget {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 19px;
+    font-weight: 600;
+  }
+
+  .location {
+    margin-top: 4px;
+    color: rgba(255,255,255,.65);
+    font-size: 12px;
+  }
+
+  .status {
+    color: rgba(255,255,255,.6);
+    font-size: 11px;
+    text-align: right;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    min-width: 0;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+
+  .label {
+    font-size: 12px;
+    color: rgba(255,255,255,.68);
+    margin-bottom: 9px;
+  }
+
+  .value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .value {
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .unit {
+    font-size: 11px;
+    color: rgba(255,255,255,.65);
+  }
+
+  .description {
+    font-size: 12px;
+    margin-top: 7px;
+  }
+
+  .good { color: #4ade80; }
+  .fair { color: #a3e635; }
+  .moderate { color: #facc15; }
+  .poor { color: #fb923c; }
+  .very-poor { color: #f87171; }
+  .muted { color: rgba(255,255,255,.65); }
+
+  .bar {
+    height: 4px;
+    background: rgba(255,255,255,.12);
+    border-radius: 5px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 5px;
+    transition: width .4s ease;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 10px;
+    color: rgba(255,255,255,.5);
+  }
+
+  @media (max-width: 220px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="widget">
+
+  <div class="header">
+    <div>
+      <div class="title">Air Quality</div>
+      <div class="location" id="location">Bramshott</div>
+    </div>
+    <div class="status" id="status">Loading…</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- AQI -->
+    <div class="card">
+      <div class="label">Air Quality Index</div>
+      <div class="value-row">
+        <div class="value" id="aqi">—</div>
+        <div class="unit">/ 5</div>
+      </div>
+      <div class="description muted" id="aqiText">
+        Waiting for data
+      </div>
+      <div class="bar">
+        <div class="bar-fill" id="aqiBar"></div>
+      </div>
+    </div>
+
+    <!-- PM2.5 -->
+    <div class="card">
+      <div class="label">PM2.5</div>
+      <div class="value-row">
+        <div class="value" id="pm25">—</div>
+        <div class="unit">µg/m³</div>
+      </div>
+      <div class="description muted">Fine particles</div>
+      <div class="bar">
+        <div class="bar-fill" id="pm25Bar"></div>
+      </div>
+    </div>
+
+    <!-- PM10 -->
+    <div class="card">
+      <div class="label">PM10</div>
+      <div class="value-row">
+        <div class="value" id="pm10">—</div>
+        <div class="unit">µg/m³</div>
+      </div>
+      <div class="description muted">Coarse particles</div>
+      <div class="bar">
+        <div class="bar-fill" id="pm10Bar"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span id="updated">Awaiting readings</span>
+    <span>Refresh: 10 min</span>
+  </div>
+
+</div>
+
+<script>
+/* ==========================================
+   CONFIGURATION
+   ========================================== */
+
+// OpenWeatherMap API key
+const OWM_API_KEY = "8fd1893b8b350bfb8dbc118cb5de9df7";
+
+// Bramshott, Hampshire, UK
+const LAT = 51.087837760221674;
+const LON = -0.7969359957356216;
+const LOCATION_NAME = "Bramshott";
+
+// Refresh every 10 minutes
+const REFRESH_MS = 10 * 60 * 1000;
+
+
+/* ==========================================
+   DISPLAY HELPERS
+   ========================================== */
+
+function setText(id, text) {
+  document.getElementById(id).textContent = text;
+}
+
+function setBar(id, percentage, colour) {
+  const bar = document.getElementById(id);
+
+  bar.style.width =
+    Math.max(0, Math.min(100, percentage)) + "%";
+
+  bar.style.background = colour;
+}
+
+function setDescriptionClass(id, className) {
+  document.getElementById(id).className =
+    "description " + className;
+}
+
+function formatNumber(value) {
+  return Number(value).toFixed(1);
+}
+
+function getAQILevel(aqi) {
+  const levels = {
+    1: ["Good", "good", "#4ade80"],
+    2: ["Fair", "fair", "#a3e635"],
+    3: ["Moderate", "moderate", "#facc15"],
+    4: ["Poor", "poor", "#fb923c"],
+    5: ["Very poor", "very-poor", "#f87171"]
+  };
+
+  return levels[aqi] ||
+    ["Unknown", "muted", "#94a3b8"];
+}
+
+
+/* ==========================================
+   LOAD AIR QUALITY
+   ========================================== */
+
+async function loadAirQuality() {
+  if (
+    !OWM_API_KEY ||
+    OWM_API_KEY === "YOUR_OPENWEATHERMAP_API_KEY"
+  ) {
+    throw new Error("Add your OpenWeatherMap API key");
+  }
+
+  const url =
+    "https://api.openweathermap.org/data/2.5/air_pollution" +
+    "?lat=" + LAT +
+    "&lon=" + LON +
+    "&appid=" + encodeURIComponent(OWM_API_KEY);
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(
+      "API error (" + response.status + ")"
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data.list || !data.list.length) {
+    throw new Error("No air quality readings returned");
+  }
+
+  const reading = data.list[0];
+
+  const aqi = Number(reading.main.aqi);
+  const pm25 = Number(reading.components.pm2_5);
+  const pm10 = Number(reading.components.pm10);
+
+  if (
+    !Number.isFinite(aqi) ||
+    !Number.isFinite(pm25) ||
+    !Number.isFinite(pm10)
+  ) {
+    throw new Error("Invalid air quality data");
+  }
+
+  // Update readings
+  setText("aqi", aqi);
+  setText("pm25", formatNumber(pm25));
+  setText("pm10", formatNumber(pm10));
+
+  // AQI classification
+  const level = getAQILevel(aqi);
+
+  setText("aqiText", level[0]);
+  setDescriptionClass("aqiText", level[1]);
+  setBar("aqiBar", aqi * 20, level[2]);
+
+  // Visual scales, not health thresholds
+  setBar("pm25Bar", pm25 / 75 * 100, "#60a5fa");
+  setBar("pm10Bar", pm10 / 150 * 100, "#60a5fa");
+
+  // Observation timestamp
+  const observationTime = new Date(reading.dt * 1000);
+
+  setText(
+    "updated",
+    "Observed " +
+      observationTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+  );
+
+  setText("status", "Live");
+}
+
+
+/* ==========================================
+   REFRESH WIDGET
+   ========================================== */
+
+let isLoading = false;
+
+async function refreshWidget() {
+  if (isLoading) return;
+
+  isLoading = true;
+  setText("status", "Updating…");
+
+  try {
+    await loadAirQuality();
+  } catch (error) {
+    console.error("Air quality error:", error);
+
+    setText("status", "Unavailable");
+    setText("aqiText", error.message);
+  } finally {
+    isLoading = false;
+  }
+}
+
+setText("location", LOCATION_NAME);
+
+refreshWidget();
+
+setInterval(refreshWidget, REFRESH_MS);
+</script>
+</body>
+</html>
