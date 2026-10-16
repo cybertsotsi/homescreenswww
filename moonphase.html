@@ -16,11 +16,17 @@
       overflow: hidden;
     }
 
-    /* Position widget at the top-left */
+    /* Centre the widget inside the dashboard box */
+    body {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
     .moonphases {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
       width: auto !important;
       height: auto !important;
       margin: 0 !important;
@@ -29,17 +35,17 @@
       border-radius: 0 !important;
       background: transparent !important;
       box-shadow: none !important;
-      text-align: left !important;
+      text-align: center !important;
+      line-height: 0 !important;
     }
 
-    /* Remove spacing and box styling */
+    /* Remove widget spacing and box styling */
     .moonphases div,
     .moonphases_phase,
     .moonphases_launch {
       display: block !important;
       width: auto !important;
       height: auto !important;
-      min-width: 0 !important;
       margin: 0 !important;
       padding: 0 !important;
       border: 0 !important;
@@ -49,7 +55,7 @@
       float: none !important;
     }
 
-    /* Fixed-size moon image */
+    /* Keep moon at a fixed size */
     .moonphases_phase img,
     .moonphases_img {
       display: block !important;
@@ -64,7 +70,7 @@
       float: none !important;
     }
 
-    /* Hide labels and branding */
+    /* Remove all labels and branding */
     .moonphases_text,
     .moonphases_illum_text,
     .moonphases_foot,
@@ -82,7 +88,6 @@
 
 <body>
 
-  <!-- Moon phase widget -->
   <script
     src="https://moonphases.co.uk/js/widget.js"
     id="moonphase_widget"
@@ -93,7 +98,6 @@
     tz="">
   </script>
 
-  <!-- Enforce fixed image size after widget loads -->
   <script>
     const moonTimer = setInterval(function () {
       const moon = document.querySelector('.moonphases_img');
